@@ -48,7 +48,7 @@ function createCard(value) {
     // ... (restante da lógica de criação das faces) ...
     return memoryCard;
 }
-
+---
 
 for (let i = 0; i < nCards; i++) { // nCards = número de pares
     // Carta 1
@@ -66,7 +66,7 @@ for (let i = 0; i < nCards; i++) { // nCards = número de pares
 }
 // Posteriormente: shuffle(cards);
 // cards.forEach(card => board.appendChild(card));
-
+---
 
 
 function salvarProgresso() {
@@ -84,7 +84,7 @@ function salvarProgresso() {
     // 2. Converte para string e salva
     localStorage.setItem('memoryGameSave', JSON.stringify(gameState));
 }
-
+---
 function carregarProgresso() {
     const savedGameJSON = localStorage.getItem('memoryGameSave');
     if (!savedGameJSON) {
@@ -121,7 +121,6 @@ function carregarProgresso() {
     
     return true; // Jogo carregado com sucesso
 }
-
 ---
 ### Interação 2
 
