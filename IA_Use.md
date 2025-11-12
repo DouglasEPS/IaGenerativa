@@ -38,9 +38,10 @@ O uso de IA foi permitido para as seguintes finalidades:
 
 - **Referência no Código:**
   A lógica inspirada por esta interação foi implementada no arquivo `script2.js`.
-  let cardIDcounter = 0; // Contador global para garantir IDs únicos
 
----
+```
+let cardIDcounter = 0; // Contador global para garantir IDs únicos
+
 function createCard(value) {
     const memoryCard = document.createElement("div");
     memoryCard.classList.add("memory-card");
@@ -48,8 +49,6 @@ function createCard(value) {
     // ... (restante da lógica de criação das faces) ...
     return memoryCard;
 }
-
----
 
 for (let i = 0; i < nCards; i++) { // nCards = número de pares
     // Carta 1
@@ -68,8 +67,6 @@ for (let i = 0; i < nCards; i++) { // nCards = número de pares
 // Posteriormente: shuffle(cards);
 // cards.forEach(card => board.appendChild(card));
 
----
-
 function salvarProgresso() {
     // 1. Coleta o estado completo
     const gameState = {
@@ -85,8 +82,6 @@ function salvarProgresso() {
     // 2. Converte para string e salva
     localStorage.setItem('memoryGameSave', JSON.stringify(gameState));
 }
-
----
 
 function carregarProgresso() {
     const savedGameJSON = localStorage.getItem('memoryGameSave');
@@ -124,7 +119,7 @@ function carregarProgresso() {
     
     return true; // Jogo carregado com sucesso
 }
-
+```
 ---
 
 ### Interação 2
@@ -139,7 +134,7 @@ function carregarProgresso() {
 - **Análise e Aplicação:** Segui a instrução e ficou otimizado. Com funçõess de inicio e fim que adiantam alguns processos.
 - **Referência no Código:** Função "IniciarJogo", "EndGame". `script2.js`.
 
-
+```
 function shuffle() {
     cards.forEach(card => {
         let randomPos = Math.floor(Math.random() * cards.length);
@@ -155,7 +150,7 @@ function disableCards() {
     secondCard.removeEventListener('click', flipCard);
     // ...
 }
-
+```
 ---
 
 
@@ -169,7 +164,7 @@ function disableCards() {
 - **Resumo da Resposta da IA:** Fez exatamente o uqe pedi.
 - **Análise e Aplicação:** Poderia ter mudanças, mas muitas alterações já foram feitas e optei por não alterar. Código funcional e mantendo a estrutura original e lógica.
 - **Referência no Código:** todo ele. `script2.js`
-
+```
 function disableCards() {
     firstCard.classList.add('matched'); // Adiciona classe para destaque visual (ex: borda verde)
     secondCard.classList.add('matched');
@@ -182,5 +177,6 @@ function endGame() {
     // ... (Lógica de salvamento) ...
     iniciarNovoJogo();
 }
+```
 ---
 
