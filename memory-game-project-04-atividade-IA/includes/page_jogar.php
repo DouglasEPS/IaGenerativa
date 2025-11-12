@@ -6,5 +6,5 @@ include 'includes/tabuleiro_jogo.php';
 
 // Inclui o script JS específico desta página
 // O script só é carregado quando estamos na página "jogar"
-echo '<script src="script.js"></script>';
+echo '<script src="script2.js"></script>';
 ?>

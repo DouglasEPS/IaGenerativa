@@ -1,6 +1,6 @@
 <?php
-$server = "mysql";
+$server = "localhost";
 $user = "root";
-$pass = "root";
+$pass = "admin";
 $db = "jogo_memoria";
 ?>

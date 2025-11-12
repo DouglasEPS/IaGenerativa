@@ -2,6 +2,7 @@ const nCards = 8;
 let cards = [];
 const attemptsSpan = document.getElementById('attempts');
 const board = document.getElementById("board")
+let cardIDcounter = 0;
 
 function createCard(value) {
   const memoryCard = document.createElement("div");
@@ -26,16 +27,27 @@ function createCard(value) {
 
   return (memoryCard);
 }
+carregarProgresso();
 
 for (let i = 0; i < nCards; i++) {
   const newCard1 = createCard(i);
+  newCard1.id = `card-${cardIDcounter}`;
+  cardIDcounter++;
+
   const newCard2 = createCard(i);
-  board.appendChild(newCard1);
-  board.appendChild(newCard2);
+  newCard2.id = `card-${cardIDcounter}`;
+  cardIDcounter++;
+  //Removi a aplicação imediata no DOM pois a minha lógica está indo para outro caminho
   cards.push(newCard1);
   cards.push(newCard2);
-}
 
+  
+}
+shuffle(cards);
+
+cards.forEach(card => {
+    board.appendChild(card);
+});
 
 let hasFlippedCard = false;
 let lockBoard = false; // Bloqueia o tabuleiro para evitar cliques rápidos
@@ -73,7 +85,13 @@ function checkForMatch() {
   let isMatch = firstCard.dataset.cardValue === secondCard.dataset.cardValue;
 
   // Se for um par, desabilita as cartas. Se não, vira-as de volta.
-  isMatch ? disableCards() : unflipCards();
+  if(isMatch){
+    disableCards();
+    salvarProgresso();
+  }else{
+    unflipCards();
+  }
+  
 }
 
 function disableCards() {
@@ -110,13 +128,69 @@ function resetBoard() {
   [firstCard, secondCard] = [null, null];
 }
 
-(function shuffle() {
-  cards.forEach(card => {
-    let randomPos = Math.floor(Math.random() * cards.length);
-    card.style.order = randomPos;
-  });
-})();
+function shuffle() {
+    cards.forEach(card => {
+        let randomPos = Math.floor(Math.random() * cards.length);
+        card.style.order = randomPos;
+    });
+}
 
+function salvarProgresso() {
+    // Percorre o array 'cards' (que está na ordem embaralhada)
+    const gameState = cards.map(card => ({
+        // 1. ID: Essencial para identificar a carta, independente da posição.
+        id: card.id, 
+        // 2. VALUE: Essencial para recriar a carta na função createCard().
+        value: card.dataset.cardValue, 
+        // 3. ESTADO: Indica se o par já foi combinado.
+        isMatched: card.classList.contains('matched')
+    }));
+
+    // Armazena a lista na ordem atual (que é a ordem do tabuleiro)
+    localStorage.setItem('memoryGameSave', JSON.stringify(gameState));
+    console.log('Jogo salvo com a ordem embaralhada e estado.');
+}
+
+function carregarProgresso() {
+    const savedGameJSON = localStorage.getItem('memoryGameSave');
+    if (!savedGameJSON) {
+        // Se não houver save, inicia um novo jogo embaralhado
+        resetBoard(); 
+        return false;
+    }
+    
+    const savedState = JSON.parse(savedGameJSON);
+    
+    // 1. Limpa o tabuleiro visual e o array de cartas
+    board.innerHTML = ''; 
+    cards = [];
+
+    savedState.forEach(item => {
+        // 2. Recria o elemento HTML com o valor salvo.
+        // O valor do ID ('0', '1', etc.) é extraído do ID completo para passar como cardId, 
+        // se a sua createCard() precisar disso. Se não, simplifique.
+        
+        // Assumindo que sua createCard precisa apenas do valor:
+        const cardElement = createCard(item.value);
+        cardElement.id = item.id; // Garante o ID único correto
+        
+        // 3. Aplica o estado salvo (isMatched)
+        if (item.isMatched) {
+            cardElement.classList.add('matched', 'flipped');
+            // Desativar clique nesta carta (depende da sua lógica de clique)
+        }
+
+        // 4. Monta o tabuleiro na ordem salva
+        cards.push(cardElement);
+        board.appendChild(cardElement);
+    });
+    
+    // 5. Inicia o jogo a partir do estado carregado
+    // setupListeners(); // Exemplo: Reativa os eventos de clique
+
+    console.log('Jogo carregado na ordem salva.');
+    return true;
+}
 
 // Adiciona o evento de clique a cada uma das cartas
 cards.forEach(card => card.addEventListener('click', flipCard));
@@ -129,6 +203,7 @@ cards.forEach(card => card.addEventListener('click', flipCard));
 function endGame() {
   // Desabilita o tabuleiro
   lockBoard = true;
+  localStorage.removeItem('memoryGameSave');
 
   const playerName = prompt(`Parabéns! Você completou o jogo em ${attempts} tentativas.\n\nDigite seu nome para salvar:`);
 
