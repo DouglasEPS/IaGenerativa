@@ -38,9 +38,90 @@ O uso de IA foi permitido para as seguintes finalidades:
 
 - **Referência no Código:**
   A lógica inspirada por esta interação foi implementada no arquivo `script2.js`.
+  let cardIDcounter = 0; // Contador global para garantir IDs únicos
+
+
+function createCard(value) {
+    const memoryCard = document.createElement("div");
+    memoryCard.classList.add("memory-card");
+    memoryCard.dataset.cardValue = value;
+    // ... (restante da lógica de criação das faces) ...
+    return memoryCard;
+}
+
+for (let i = 0; i < nCards; i++) { // nCards = número de pares
+    // Carta 1
+    const newCard1 = createCard(i);
+    newCard1.id = `card-${cardIDcounter}`;
+    cardIDcounter++;
+
+    // Carta 2 (o par)
+    const newCard2 = createCard(i);
+    newCard2.id = `card-${cardIDcounter}`;
+    cardIDcounter++;
+
+    cards.push(newCard1);
+    cards.push(newCard2);
+}
+// Posteriormente: shuffle(cards);
+// cards.forEach(card => board.appendChild(card));
 
 ---
 
+function salvarProgresso() {
+    // 1. Coleta o estado completo
+    const gameState = {
+        attempts: attempts,          // Salva as tentativas
+        matchedPairs: matchedPairs,  // Salva os pares encontrados
+        cardsState: cards.map(card => ({
+            id: card.id,             // Chave para a restauração da ordem
+            value: card.dataset.cardValue, // Chave para a recriação da carta
+            isMatched: card.classList.contains('matched') // Estado da carta
+        }))
+    };
+
+    // 2. Converte para string e salva
+    localStorage.setItem('memoryGameSave', JSON.stringify(gameState));
+}
+
+function carregarProgresso() {
+    const savedGameJSON = localStorage.getItem('memoryGameSave');
+    if (!savedGameJSON) {
+        return false; // Não há jogo salvo, iniciar um novo
+    }
+    
+    const savedState = JSON.parse(savedGameJSON);
+    
+    // 1. Limpa o tabuleiro e o array atual
+    board.innerHTML = ''; 
+    cards = [];
+
+    // 2. Restaura contadores
+    attempts = savedState.attempts || 0;
+    matchedPairs = savedState.matchedPairs || 0;
+    // Atualiza o display: attemptsSpan.textContent = attempts;
+
+    // 3. Recria as cartas na ordem SALVA
+    savedState.cardsState.forEach(item => {
+        const cardElement = createCard(item.value); // Recria o elemento
+        cardElement.id = item.id; // Restaura o ID original
+        
+        if (item.isMatched) {
+            // Aplica o estado de combinada
+            cardElement.classList.add('matched', 'flip');
+        }
+
+        cards.push(cardElement);
+        board.appendChild(cardElement); // Desenha na ordem salva
+    });
+    
+    // É necessário re-adicionar os listeners após a recriação:
+    // cards.forEach(card => card.addEventListener('click', flipCard));
+    
+    return true; // Jogo carregado com sucesso
+}
+
+---
 ### Interação 2
 
 - **Data:** 12/11/25
@@ -52,6 +133,23 @@ O uso de IA foi permitido para as seguintes finalidades:
 - **Resumo da Resposta da IA:** A IA deu um passo a passo de como poderia ser feita a automação e corrijiu erros de sintaxe.
 - **Análise e Aplicação:** Segui a instrução e ficou otimizado. Com funçõess de inicio e fim que adiantam alguns processos.
 - **Referência no Código:** Função "IniciarJogo", "EndGame". `script2.js`.
+
+
+function shuffle() {
+    cards.forEach(card => {
+        let randomPos = Math.floor(Math.random() * cards.length);
+        // Otimização: Apenas altera uma propriedade CSS, não a estrutura do DOM.
+        card.style.order = randomPos; 
+    });
+}
+
+function disableCards() {
+    // Otimização: Remove listeners para que o navegador não precise processar 
+    // cliques em cartas que não mudarão de estado.
+    firstCard.removeEventListener('click', flipCard);
+    secondCard.removeEventListener('click', flipCard);
+    // ...
+}
 
 ---
 
@@ -67,5 +165,17 @@ O uso de IA foi permitido para as seguintes finalidades:
 - **Análise e Aplicação:** Poderia ter mudanças, mas muitas alterações já foram feitas e optei por não alterar. Código funcional e mantendo a estrutura original e lógica.
 - **Referência no Código:** todo ele. `script2.js`
 
+function disableCards() {
+    firstCard.classList.add('matched'); // Adiciona classe para destaque visual (ex: borda verde)
+    secondCard.classList.add('matched');
+    
+}
+
+function endGame() {
+    // Feedback: Alerta o jogador com seu resultado final
+    const playerName = prompt(`Parabéns! Você completou o jogo em ${attempts} tentativas.`);
+    // ... (Lógica de salvamento) ...
+    iniciarNovoJogo();
+}
 ---
 
