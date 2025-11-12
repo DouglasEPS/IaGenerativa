@@ -40,7 +40,7 @@ O uso de IA foi permitido para as seguintes finalidades:
   A lógica inspirada por esta interação foi implementada no arquivo `script2.js`.
   let cardIDcounter = 0; // Contador global para garantir IDs únicos
 
-
+---
 function createCard(value) {
     const memoryCard = document.createElement("div");
     memoryCard.classList.add("memory-card");
@@ -48,6 +48,7 @@ function createCard(value) {
     // ... (restante da lógica de criação das faces) ...
     return memoryCard;
 }
+
 
 for (let i = 0; i < nCards; i++) { // nCards = número de pares
     // Carta 1
@@ -66,7 +67,7 @@ for (let i = 0; i < nCards; i++) { // nCards = número de pares
 // Posteriormente: shuffle(cards);
 // cards.forEach(card => board.appendChild(card));
 
----
+
 
 function salvarProgresso() {
     // 1. Coleta o estado completo
